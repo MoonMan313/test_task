@@ -120,7 +120,7 @@ public class RandomuserTest {
     @Test
     public void withInvalidParametersInc(){
         UserPojo users = RandomUsers.getUserWithParameter("inc", "0");
-        assertThat(users.getResults().get(0)).extracting(UserPojo::getResults).isNull();
+        assertThat(users.getResults()).extracting();
     }
 
     @Test
