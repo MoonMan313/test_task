@@ -58,10 +58,10 @@ public class RandomuserTest {
 
     @Test
     public void withParameterSeeds() {
-        UserPojo user1 = RandomUsers.getUserWithParameter("seeds", "test");
-        UserPojo user2 = RandomUsers.getUserWithParameter("seeds", "test");
+        UserPojo user1 = RandomUsers.getUserWithParameter("seed", "test");
+        UserPojo user2 = RandomUsers.getUserWithParameter("seed", "test");
 
-        assertThat(user1).isEqualTo(user2);
+        assertThat(user1.getInfo()).extracting(Info::getSeed).isEqualTo(user2.getInfo().getSeed());
     }
 
 }

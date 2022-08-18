@@ -7,7 +7,7 @@ public class Location{
 	private String city;
 	private Street street;
 	private Timezone timezone;
-	private int postcode;
+	private String postcode;
 	private Coordinates coordinates;
 	private String state;
 
@@ -27,7 +27,7 @@ public class Location{
 		return timezone;
 	}
 
-	public int getPostcode(){
+	public String getPostcode(){
 		return postcode;
 	}
 
@@ -55,7 +55,7 @@ public class Location{
 		this.timezone = timezone;
 	}
 
-	public void setPostcode(int postcode) {
+	public void setPostcode(String postcode) {
 		this.postcode = postcode;
 	}
 
