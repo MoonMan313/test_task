@@ -39,24 +39,6 @@ public class RandomuserTest {
         assertThat(users.getResults().get(0)).extracting(ResultsItem::getGender).isEqualTo("male");
     }
 
-//    @Test
-//    public void withParameterPasswordsSpecial() {
-//        UserPojo users = RandomUsers.getUserWithParameter("passwords", "special,32");
-//        assertThat(users.getResults().get(0).getLogin()).extracting(Login::getPassword).isEqualTo();
-//    }
-//
-//    @Test
-//    public void withParameterPasswordsSpecial() {
-//        UserPojo users = RandomUsers.getUserWithParameter("passwords", "special,32");
-//        assertThat(users.getResults().get(0).getLogin()).extracting(Login::getPassword).isEqualTo();
-//    }
-//
-//    @Test
-//    public void withParameterPasswordsSpecial() {
-//        UserPojo users = RandomUsers.getUserWithParameter("passwords", "special,32");
-//        assertThat(users.getResults().get(0).getLogin()).extracting(Login::getPassword).isEqualTo();
-//    }
-
     @Test
     public void withParameterSeeds() {
         UserPojo user1 = RandomUsers.getUserWithParameter("seed", "test");
@@ -135,4 +117,13 @@ public class RandomuserTest {
         assertThat(users.getResults().get(0)).extracting(ResultsItem::getNat).isNotNull();
     }
 
+    @Test
+    public void withSpecialParameters(){
+        given()
+                .param("results", "-1")
+                .contentType(ContentType.JSON)
+                .when().get("https://randomuser.me/api/")
+                .then().statusCode(400)
+                .body("error", equalTo("Uh oh, something has gone wrong. Please tweet us @randomapi about the issue. Thank you."));;
+    }
 }
