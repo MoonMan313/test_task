@@ -2,10 +2,11 @@ package API.Randomuser;
 
 import API.Randomuser.models.RandomUsers;
 import API.Randomuser.pojo.Info;
-import API.Randomuser.pojo.Login;
 import API.Randomuser.pojo.ResultsItem;
 import API.Randomuser.pojo.UserPojo;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.http.ContentType;
 import org.junit.Test;
 
 
@@ -62,6 +63,76 @@ public class RandomuserTest {
         UserPojo user2 = RandomUsers.getUserWithParameter("seed", "test");
 
         assertThat(user1.getInfo()).extracting(Info::getSeed).isEqualTo(user2.getInfo().getSeed());
+    }
+
+    @Test
+    public void withParameterFormat() {
+        given()
+                .param("format", "XML")
+                .contentType(ContentType.JSON)
+                .when().get("https://randomuser.me/api/")
+                .then().statusCode(200)
+                .contentType(ContentType.XML);
+    }
+
+    @Test
+    public void withParameterNat() {
+        UserPojo users = RandomUsers.getUserWithParameter("nat", "FI");
+        assertThat(users.getResults().get(0)).extracting(ResultsItem::getNat).isEqualTo("FI");
+    }
+
+    @Test
+    public void withMultipleParameters() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserPojo users;
+        try {
+            users =
+                    objectMapper.readValue(
+                            given()
+                                    .param("gender", "female")
+                                    .param("results", "3")
+                                    .param("nat", "FI")
+                                    .contentType(ContentType.JSON)
+                                    .when().get("https://randomuser.me/api/")
+                                    .then().statusCode(200)
+                                    .extract().asString(),
+                            UserPojo.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        assertThat(users.getResults().stream().count()).isEqualTo(3);
+        users.getResults().stream().map(ResultsItem::getGender).forEach(i -> assertThat(i).isEqualTo("female"));
+        users.getResults().stream().map(ResultsItem::getNat).forEach(i -> assertThat(i).isEqualTo("FI"));
+    }
+
+    @Test
+    public void parameterException() {
+        UserPojo users = RandomUsers.getUserWithParameter("exc", "login");
+        assertThat(users.getResults().get(0)).extracting(ResultsItem::getLogin).isNull();
+    }
+
+    @Test
+    public void withSpecialParameters(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserPojo users;
+        try {
+            users =
+                    objectMapper.readValue(
+                            given()
+                                    .param("gender", "female")
+                                    .param("name", "Evelina")
+                                    .param("nat", "FI")
+                                    .contentType(ContentType.JSON)
+                                    .when().get("https://randomuser.me/api/")
+                                    .then().statusCode(200)
+                                    .extract().asString(),
+                            UserPojo.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        assertThat(users.getResults().get(0)).extracting(ResultsItem::getGender).isNotNull();
+        assertThat(users.getResults().get(0)).extracting(ResultsItem::getName).isNotNull();
+        assertThat(users.getResults().get(0)).extracting(ResultsItem::getNat).isNotNull();
     }
 
 }
