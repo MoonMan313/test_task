@@ -118,12 +118,22 @@ public class RandomuserTest {
     }
 
     @Test
-    public void withSpecialParameters(){
-        given()
-                .param("results", "-1")
-                .contentType(ContentType.JSON)
-                .when().get("https://randomuser.me/api/")
-                .then().statusCode(400)
-                .body("error", equalTo("Uh oh, something has gone wrong. Please tweet us @randomapi about the issue. Thank you."));;
+    public void withInvalidParametersInc(){
+        UserPojo users = RandomUsers.getUserWithParameter("inc", "0");
+        assertThat(users).extracting(UserPojo::getResults).isNull();
     }
+
+    @Test
+    public void withInvalidParametersNat(){
+        UserPojo users = RandomUsers.getUserWithParameter("nat", "аб");
+        assertThat(users.getResults().get(0)).extracting(ResultsItem::getLogin).isNull();
+    }
+
+    @Test
+    public void withInvalidParametersGender(){
+        UserPojo users = RandomUsers.getUserWithParameter("gender", "10");
+        assertThat(users.getResults().get(0)).extracting(ResultsItem::getLogin).isNull();
+    }
+
+
 }
