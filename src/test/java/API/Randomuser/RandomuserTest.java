@@ -118,12 +118,6 @@ public class RandomuserTest {
     }
 
     @Test
-    public void withInvalidParametersInc(){
-        UserPojo users = RandomUsers.getUserWithParameter("inc", "0");
-        assertThat(users.getResults()).extracting();
-    }
-
-    @Test
     public void withInvalidParametersNat(){
         UserPojo users = RandomUsers.getUserWithParameter("nat", "аб");
         assertThat(users.getResults().get(0)).extracting(ResultsItem::getNat).isNotEqualTo("аб");
