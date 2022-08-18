@@ -120,19 +120,19 @@ public class RandomuserTest {
     @Test
     public void withInvalidParametersInc(){
         UserPojo users = RandomUsers.getUserWithParameter("inc", "0");
-        assertThat(users).extracting(UserPojo::getResults).isNull();
+        assertThat(users.getResults().get(0)).extracting(UserPojo::getResults).isNull();
     }
 
     @Test
     public void withInvalidParametersNat(){
         UserPojo users = RandomUsers.getUserWithParameter("nat", "аб");
-        assertThat(users.getResults().get(0)).extracting(ResultsItem::getLogin).isNull();
+        assertThat(users.getResults().get(0)).extracting(ResultsItem::getNat).isNotEqualTo("аб");
     }
 
     @Test
     public void withInvalidParametersGender(){
         UserPojo users = RandomUsers.getUserWithParameter("gender", "10");
-        assertThat(users.getResults().get(0)).extracting(ResultsItem::getLogin).isNull();
+        assertThat(users.getResults().get(0)).extracting(ResultsItem::getGender).isNotEqualTo("10");
     }
 
 
